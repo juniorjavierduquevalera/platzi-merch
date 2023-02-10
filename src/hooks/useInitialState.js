@@ -1,14 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import initialState  from '../initialState';
 
 const useInitialState = () => {
     const [state, setState] = useState(initialState);
     const addToCart = payload => {
+      const cart = [...state.cart, payload];
       setState({
         ...state,
-        cart: [...state.cart, payload],
+        cart
       });
+      localStorage.setItem('cartItems', JSON.stringify(cart));
     }
+
+    useEffect(() =>{
+      const cartItemsData = JSON.parse(localStorage.getItem('cartItems'));
+      if (cartItemsData) {
+        setState({... state, cart: cartItemsData})
+      }
+    }, []);
+
     const removeFromCart = payload => {
       setState({
         ...state,
